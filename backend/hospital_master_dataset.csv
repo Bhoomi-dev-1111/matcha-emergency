@@ -1,0 +1,11 @@
+hospital_id,name,latitude,longitude,specialization,total_beds,available_beds,icu_beds,emergency_beds,available_doctors,equipment_score,success_rate,avg_wait_time_min,age_risk_score
+1,Thapar Cardiac Center,30.355237670618546,76.37116355615764,Cardiac,250,40,30,25,18,9.5,0.94,12,9
+2,City Trauma Institute,30.354453117211907,76.37011729533909,Trauma,180,15,20,30,12,8.8,0.91,18,7
+3,Respiratory Care Hub,30.35501917756611,76.36566773625616,Respiratory,120,60,10,15,8,7.2,0.87,25,8
+4,Advanced Trauma & ICU,30.356010020287684,76.36836644391771,Trauma,300,5,50,40,25,9.7,0.96,8,9
+5,General Health Hospital,30.35795181537001,76.36708431044477,General,90,50,5,10,6,6.5,0.82,30,6
+6,Pediatric & Neonatal Center,30.352135172048,76.37056410101722,Pediatrics,150,35,15,20,10,8.0,0.89,20,10
+7,Emergency Response Hospital,30.35281080272031,76.36714830153024,Emergency,220,70,25,35,20,9.0,0.92,10,8
+8,Rural Community Clinic,30.350778412527855,76.36463730599525,General,60,45,2,5,4,5.5,0.75,40,5
+9,Critical Care Multispecialty,30.354970859058866,76.37105761144767,Critical Care,350,12,60,50,30,9.9,0.97,6,10
+10,ENT & Specialty Hospital,30.356312928961948,76.37180880679901,ENT,100,55,8,12,7,7.0,0.85,22,6

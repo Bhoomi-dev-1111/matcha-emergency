@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MATCHA EMERGENCY</title>
+<link rel="stylesheet" href="style.css">
+<link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="navbar">
+    <div class="logo-section">
+        <div class="logo-box">
+            <img src="logo.jpg" alt="Logo">
+        </div>
+        <div class="title-text">
+            <h1>MATCHA EMERGENCY</h1>
+            <p>Where urgency meets the right care.</p>
+        </div>
+    </div>
+    <button class="donate-btn" onclick="openPanel()">❤️ DONATE</button>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="form-card">
+        <h2>Request Assistance</h2>
+
+        <form id="requestForm" autocomplete="off">
+
+            <label>Patient Severity Level *</label>
+            <select id="severitySelect" required>
+                <option value="">Select severity level</option>
+                <option value="Critical">Critical</option>
+                <option value="High">High</option>
+                <option value="Moderate">Moderate</option>
+            </select>
+
+            <label>Primary Condition Type *</label>
+            <select id="conditionSelect" required>
+                <option value="">Select condition type</option>
+                <option value="Cardiac">Cardiac</option>
+                <option value="Trauma">Trauma</option>
+                <option value="Respiratory">Respiratory</option>
+                <option value="General">General</option>
+            </select>
+
+            <label>Age *</label>
+            <input type="number" id="ageInput" placeholder="Enter age" min="1" max="120" required>
+            <div id="ageError" style="color:red; font-size:12px; margin-top:4px;"></div>
+
+            <label>Gender *</label>
+            <select id="genderSelect" required>
+                <option value="">Select gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <button type="submit" class="submit-btn" id="submitBtn">
+                Submit Request
+            </button>
+        </form>
+
+        <div id="result" style="margin-top:20px;"></div>
+    </div>
+</section>
+
+<!-- MAP SECTION -->
+<section class="map-section">
+    <h2>Hospital Locations — Thapar University</h2>
+
+    <div style="text-align:center; margin-bottom:15px;">
+        <button id="nearestBtn" onclick="showNearestHospital()"
+            style="padding:10px 18px; background:#274375; color:white; border:none;
+                   border-radius:8px; cursor:pointer; font-weight:600;">
+            🚑 Show Nearest Hospital
+        </button>
+    </div>
+
+    <div id="map"></div>
+
+    <div id="nearestResult"
+         style="display:none; margin-top:20px; padding:16px; border-radius:12px;
+                background:#e8f5e9; border-left:4px solid #27AE60;
+                max-width:600px; margin-left:auto; margin-right:auto;">
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-col">
+      <h3>About Rural Referral System</h3>
+      <ul>
+        <li>AI-driven, capacity-aware referral system</li>
+        <li>Real-time hospital bed & ICU visibility</li>
+        <li>Optimized patient referrals</li>
+        <li>Load balancing logic to avoid overload</li>
+      </ul>
+      <p class="about-text">
+        Rural healthcare systems face fragmented infrastructure, limited ICU and bed capacity,
+        and poor coordination between facilities.
+      </p>
+    </div>
+    <div class="footer-col">
+      <h3>Quick Links</h3>
+      <ul>
+        <li>Contact</li><li>Request Assistance</li>
+        <li>Dashboard</li><li>Operational Framework</li>
+        <li>Technical Approach</li><li>Future Scope</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>Key Features</h3>
+      <ul>
+        <li>Capacity Heatmap</li><li>Referral Time Estimator</li>
+        <li>AI Decision Support</li><li>Multi-factor Evaluation</li>
+        <li>Real-time Updates</li><li>Patient Data Collection</li>
+        <li>Hospital Resource Assessment</li><li>Optimal Referral Selection</li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h3>Emergency</h3>
+      <div class="emergency-btn">📞 24/7 Hotline</div>
+      <div class="emergency-btn">💬 Live Chat</div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div>© 2026 Rural Referral System | Matcha Emergency</div>
+    <div>Designed & Developed by <span>Matcha Coders</span></div>
+  </div>
+</footer>
+
+<!-- DONATION PANEL -->
+<div id="donationPanel" class="donation-panel">
+    <div class="panel-container">
+        <div class="panel-left">
+            <h2>Health emergencies can't wait</h2>
+            <p>Your support helps deliver urgent care to those who need it most.
+               Every contribution directly supports emergency response teams.</p>
+        </div>
+        <div class="panel-right">
+            <div class="panel-header">
+                <h3>Secure Donation</h3>
+                <span class="close-btn" onclick="closePanel()">&times;</span>
+            </div>
+            <div class="donation-options">
+                <button>₹900</button>
+                <button>₹2,000</button>
+                <button>₹5,000</button>
+                <button>₹8,000</button>
+            </div>
+            <div class="custom-amount">
+                <span class="currency">₹</span>
+                <input type="number" id="donationAmount" placeholder="Enter custom amount">
+            </div>
+            <div class="payment-methods">
+                <p>Select payment method</p>
+                <div class="payment-options">
+                    <button class="payment-btn active">💳 Card</button>
+                    <button class="payment-btn">🟢 UPI</button>
+                    <button class="payment-btn">🅖 GPay</button>
+                    <button class="payment-btn">🅿 Paytm</button>
+                </div>
+            </div>
+            <button class="donate-final" onclick="payNow()">Donate Now</button>
+        </div>
+    </div>
+</div>
+<div id="overlay" class="overlay" onclick="closePanel()"></div>
+
+<script>
+
+const BACKEND = "http://127.0.0.1:8000";
+
+/* ========================= */
+/* FORM → BACKEND            */
+/* ========================= */
+
+window.addEventListener("pageshow", () => {
+    document.getElementById("requestForm").reset();
+    document.getElementById("result").innerHTML = "";
+});
+
+document.getElementById("requestForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const severity  = document.getElementById("severitySelect").value;
+    const condition = document.getElementById("conditionSelect").value;
+    const age       = parseInt(document.getElementById("ageInput").value);
+    const ageError  = document.getElementById("ageError");
+    const resultDiv = document.getElementById("result");
+    const submitBtn = document.getElementById("submitBtn");
+
+    ageError.innerHTML = "";
+
+    if (!severity)           { resultDiv.innerHTML = "⚠️ Please select a severity level."; return; }
+    if (!condition)          { resultDiv.innerHTML = "⚠️ Please select a condition type."; return; }
+    if (isNaN(age) || age < 1) { ageError.innerHTML = "⚠️ Age cannot be zero or negative."; return; }
+    if (age > 120)           { ageError.innerHTML = "⚠️ Please enter a valid age (1–120)."; return; }
+
+    if (!navigator.geolocation) {
+        resultDiv.innerHTML = "⚠️ Geolocation not supported by your browser.";
+        return;
+    }
+
+    resultDiv.innerHTML = "⏳ Detecting your location...";
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Finding best hospital...";
+
+    navigator.geolocation.getCurrentPosition(function(position) {
+
+        fetch(`${BACKEND}/recommend`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                latitude:  position.coords.latitude,
+                longitude: position.coords.longitude,
+                problem:   condition,
+                severity:  severity,
+                age:       age,
+                top_n:     3
+            })
+        })
+        .then(res => {
+            if (!res.ok) return res.json().then(err => { throw new Error(err.detail || "Server error"); });
+            return res.json();
+        })
+        .then(data => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit Request";
+
+            if (!data.recommendations || data.recommendations.length === 0) {
+                resultDiv.innerHTML = "⚠️ No hospitals with available beds found.";
+                return;
+            }
+
+            const medals      = ["🥇", "🥈", "🥉"];
+            const bgColors    = ["#e8f5e9", "#f4f8ff", "#fafafa"];
+            const borderColors = ["#27AE60", "#1565C0", "#999999"];
+
+            const cards = data.recommendations.map((h, i) => `
+                <div style="padding:15px; border-radius:10px; background:${bgColors[i]};
+                            border-left:4px solid ${borderColors[i]}; margin-bottom:12px;">
+                    <h3 style="margin:0 0 8px; color:#1a1a1a;">
+                        ${medals[i]} ${h.hospital_name}
+                    </h3>
+                    <p><strong>Specialization:</strong> ${h.specialization}
+                       ${h.spec_match ? '<span style="color:green"> ✅ Match</span>' : ''}</p>
+                    <p><strong>Available Beds:</strong> ${h.available_beds}
+                       &nbsp;|&nbsp;<strong>ICU Beds:</strong> ${h.icu_beds}</p>
+                    <p><strong>Distance:</strong> ${h.distance_km} km
+                       &nbsp;|&nbsp;<strong>ETA:</strong> ${h.eta_minutes} min</p>
+                    <p><strong>Success Rate:</strong> ${(h.success_rate * 100).toFixed(1)}%
+                       &nbsp;|&nbsp;<strong>Avg Wait:</strong> ${h.avg_wait_time_min} min</p>
+                    <p><strong>ML Confidence:</strong> ${(h.ml_confidence * 100).toFixed(2)}%</p>
+                </div>
+            `).join("");
+
+            resultDiv.innerHTML = `
+                <h3 style="margin-bottom:8px; color:#274375;">🏥 Top Recommendations</h3>
+                <p style="color:#666; font-size:13px; margin-bottom:12px;">
+                    Assessed <strong>${data.hospitals_considered}</strong> hospitals for
+                    <strong>${data.patient.severity}</strong> /
+                    <strong>${data.patient.problem}</strong>
+                </p>
+                ${cards}
+            `;
+
+            // Fly map to best recommended hospital
+            if (data.recommendations[0]) {
+                highlightRecommendedHospital(data.recommendations[0].hospital_name, data.recommendations[0]);
+            }
+
+            document.getElementById("requestForm").reset();
+        })
+        .catch(err => {
+            submitBtn.disabled = false;
+            submitBtn.textContent = "Submit Request";
+            resultDiv.innerHTML = `
+                ⚠️ Could not connect to backend.<br>
+                <small style="color:#888;">
+                    Make sure uvicorn is running on port 8000.<br>Error: ${err.message}
+                </small>`;
+        });
+
+    }, () => {
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit Request";
+        resultDiv.innerHTML = "⚠️ Location access denied. Please allow location in your browser.";
+    });
+});
+
+/* ========================= */
+/* MAPBOX SETUP              */
+/* ========================= */
+
+mapboxgl.accessToken = 'pk.eyJ1IjoiYWF5dXNoaS0wNTE2IiwiYSI6ImNtbHdyejc3YzBsdXQzbHI0MmIzaDR4Y2IifQ.AatVpEQgNErxV7THzxeM9Q';
+
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [76.3647, 30.3538],
+    zoom: 16, pitch: 60, bearing: -20, antialias: true
+});
+
+map.on('style.load', () => {
+    map.addLayer({
+        id: '3d-buildings', source: 'composite',
+        'source-layer': 'building', filter: ['==', 'extrude', 'true'],
+        type: 'fill-extrusion', minzoom: 15,
+        paint: {
+            'fill-extrusion-color': '#aaa',
+            'fill-extrusion-height': ['get', 'height'],
+            'fill-extrusion-base': ['get', 'min_height'],
+            'fill-extrusion-opacity': 0.6
+        }
+    });
+});
+
+/* ========================= */
+/* HOSPITAL DATA             */
+/* ========================= */
+
+// Static GPS coords matched by index to hospital_master_dataset rows
+const staticCoords = [
+    [76.37116355615764, 30.355237670618546],
+    [76.37011729533909, 30.354453117211907],
+    [76.36566773625616, 30.35501917756611],
+    [76.36836644391771, 30.356010020287684],
+    [76.36708431044477, 30.35795181537001],
+    [76.37056410101722, 30.352135172048],
+    [76.36714830153024, 30.35281080272031],
+    [76.36463730599525, 30.350778412527855],
+    [76.37105761144767, 30.354970859058866],
+    [76.37180880679901, 30.356312928961948]
+];
+
+let hospitalData      = [];
+let hospitalMarkers   = [];
+let userMarker        = null;
+let nearestMarker     = null;
+let recommendedMarker = null;
+
+async function loadHospitalData() {
+    try {
+        const res = await fetch(`${BACKEND}/hospitals`);
+        if (!res.ok) throw new Error();
+        const list = await res.json();
+        hospitalData = list.map((h, i) => ({
+            name:           h.name,
+            specialization: h.specialization,
+            available_beds: h.available_beds,
+            coords:         staticCoords[i] || [76.3647, 30.3538]
+        }));
+    } catch {
+        // Backend offline — use static names + coords
+        hospitalData = staticCoords.map((coords, i) => ({
+            name:           `Thapar Hospital ${i + 1}`,
+            specialization: "General",
+            available_beds: "—",
+            coords
+        }));
+    }
+}
+
+function getMarkerColor(severity) {
+    if (severity === "Critical") return "#E63946";
+    if (severity === "High")     return "#F4A261";
+    if (severity === "Moderate") return "#2A9D8F";
+    return "#274375";
+}
+
+function renderHospitalMarkers() {
+    hospitalMarkers.forEach(m => m.remove());
+    hospitalMarkers = [];
+
+    const severity = document.getElementById("severitySelect").value;
+    const color    = getMarkerColor(severity);
+
+    hospitalData.forEach(h => {
+        const marker = new mapboxgl.Marker({ color })
+            .setLngLat(h.coords)
+            .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
+                <h3 style="margin:0 0 5px">${h.name}</h3>
+                <p><strong>Specialization:</strong> ${h.specialization}</p>
+                <p><strong>Available Beds:</strong> ${h.available_beds}</p>
+            `))
+            .addTo(map);
+        hospitalMarkers.push(marker);
+    });
+
+    // Fit map to all hospitals
+    const bounds = new mapboxgl.LngLatBounds();
+    hospitalData.forEach(h => bounds.extend(h.coords));
+    map.fitBounds(bounds, { padding: 60, duration: 1500 });
+}
+
+function highlightRecommendedHospital(name, details) {
+    if (recommendedMarker) recommendedMarker.remove();
+
+    const match = hospitalData.find(h => h.name.toLowerCase() === name.toLowerCase());
+    if (!match) return;
+
+    recommendedMarker = new mapboxgl.Marker({ color: "#27AE60", scale: 1.6 })
+        .setLngLat(match.coords)
+        .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(`
+            <h3 style="margin:0 0 5px; color:#27AE60">🥇 ${match.name}</h3>
+            <p><strong>ETA:</strong> ${details.eta_minutes} min</p>
+            <p><strong>Beds:</strong> ${details.available_beds}
+               &nbsp;|&nbsp;<strong>ICU:</strong> ${details.icu_beds}</p>
+            <p><strong>Confidence:</strong> ${(details.ml_confidence * 100).toFixed(1)}%</p>
+        `))
+        .addTo(map);
+
+    recommendedMarker.togglePopup();
+    map.flyTo({ center: match.coords, zoom: 17, pitch: 65, bearing: -20, speed: 0.8 });
+}
+
+/* ========================= */
+/* NEAREST HOSPITAL BUTTON   */
+/* ========================= */
+
+function haversineKm(lat1, lon1, lat2, lon2) {
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI / 180;
+    const dLon = (lon2 - lon1) * Math.PI / 180;
+    const a = Math.sin(dLat/2)**2 +
+              Math.cos(lat1 * Math.PI/180) * Math.cos(lat2 * Math.PI/180) *
+              Math.sin(dLon/2)**2;
+    return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function showNearestHospital() {
+    if (!navigator.geolocation) { alert("Geolocation not supported."); return; }
+
+    const btn = document.getElementById("nearestBtn");
+    btn.textContent = "📍 Locating...";
+    btn.disabled = true;
+
+    navigator.geolocation.getCurrentPosition(pos => {
+        btn.textContent = "🚑 Show Nearest Hospital";
+        btn.disabled = false;
+
+        const userLat = pos.coords.latitude;
+        const userLon = pos.coords.longitude;
+
+        let nearest = hospitalData[0], minDist = Infinity;
+        hospitalData.forEach(h => {
+            const d = haversineKm(userLat, userLon, h.coords[1], h.coords[0]);
+            if (d < minDist) { minDist = d; nearest = h; }
+        });
+
+        const etaMin = Math.max(1, Math.round((minDist / 60) * 60));
+
+        if (userMarker)    userMarker.remove();
+        if (nearestMarker) nearestMarker.remove();
+
+        userMarker = new mapboxgl.Marker({ color: "#2A9D8F" })
+            .setLngLat([userLon, userLat])
+            .setPopup(new mapboxgl.Popup().setHTML("<strong>📍 Your Location</strong>"))
+            .addTo(map);
+
+        nearestMarker = new mapboxgl.Marker({ color: "#E63946", scale: 1.5 })
+            .setLngLat(nearest.coords)
+            .setPopup(new mapboxgl.Popup().setHTML(`
+                <h3 style="margin:0 0 5px">${nearest.name}</h3>
+                <p>🚑 Nearest Hospital</p>
+                <p><strong>Distance:</strong> ${minDist.toFixed(2)} km</p>
+                <p><strong>ETA:</strong> ~${etaMin} min</p>
+            `))
+            .addTo(map);
+
+        nearestMarker.togglePopup();
+
+        const card = document.getElementById("nearestResult");
+        card.style.display = "block";
+        card.innerHTML = `
+            <h3 style="margin:0 0 8px; color:#27AE60">🚑 Nearest Hospital</h3>
+            <p><strong>${nearest.name}</strong></p>
+            <p>Distance: ${minDist.toFixed(2)} km &nbsp;|&nbsp; ETA: ~${etaMin} min</p>
+            <p>Available Beds: ${nearest.available_beds}</p>
+        `;
+
+        map.flyTo({ center: nearest.coords, zoom: 18, pitch: 65, bearing: -20, speed: 0.8 });
+
+    }, () => {
+        btn.textContent = "🚑 Show Nearest Hospital";
+        btn.disabled = false;
+        alert("Please allow location access and try again.");
+    });
+}
+
+/* ========================= */
+/* MAP LOAD INIT             */
+/* ========================= */
+
+map.on('load', async () => {
+    await loadHospitalData();
+    renderHospitalMarkers();
+});
+
+document.getElementById("severitySelect").addEventListener("change", () => {
+    if (hospitalData.length > 0) renderHospitalMarkers();
+});
+
+/* ========================= */
+/* DONATION PANEL            */
+/* ========================= */
+
+function openPanel() {
+    document.getElementById("donationPanel").style.right = "0";
+    document.getElementById("overlay").style.display = "block";
+}
+
+function closePanel() {
+    document.getElementById("donationPanel").style.right = "-800px";
+    document.getElementById("overlay").style.display = "none";
+}
+
+document.querySelectorAll(".donation-options button").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".donation-options button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        document.getElementById("donationAmount").value =
+            btn.innerText.replace("₹","").replace(",","");
+    });
+});
+
+document.querySelectorAll(".payment-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        document.querySelectorAll(".payment-btn").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+    });
+});
+
+function payNow() {
+    const amount = document.getElementById("donationAmount").value;
+    if (!amount || amount <= 0) { alert("Please enter a valid donation amount."); return; }
+    const btn = document.querySelector(".donate-final");
+    btn.innerText = "Processing...";
+    btn.disabled = true;
+    setTimeout(() => {
+        alert("Payment Successful! 🎉\n\nThank you for supporting MATCHA EMERGENCY ❤️");
+        btn.innerText = "Donate Now";
+        btn.disabled = false;
+        closePanel();
+    }, 1500);
+}
+
+</script>
+</body>
+</html>
